@@ -20,6 +20,7 @@ var rootRouter = mux.NewRouter()
 var Router = rootRouter.PathPrefix("/v1").Subrouter()
 
 func main() {
+
 	setupPrometheus()
 	setupCryptoEndpoints()
 	log.Fatal(http.ListenAndServe(":8000", rootRouter))
