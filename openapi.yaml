@@ -1,0 +1,101 @@
+openapi: 3.0.0
+info:
+  title: LakeMalar Crypto API
+  description: API for simple encryption services.
+  version: 0.1.0
+
+servers:
+  - url: http://api.rocksoft.com/v1
+    description: Prod server
+    
+tags:
+- name: "AES"
+  description: "AES Encryption"
+  externalDocs:
+    description: "Find out more"
+    url: "http://api."
+paths:
+  /crypto/aes:
+    get:
+      tags:
+      - "AES"
+      summary: List of AES encryption services.
+      responses:
+        '200':
+          description: Returns a list of AES encryption services.
+          content:
+            application/json:
+              schema:
+                  type: string
+                  example: ["128-ecb","192-ecb","256-ecb"]
+  /crypto/aes/ecb128/encrypt:
+    post:
+        tags:
+          - "AES"
+        summary: Encrypts plaintext with AES-128 in ECB mode.
+        description: Keysize in bytes must be 16, 24, 32. Output is encoded in base64.
+        responses:
+          '200':    # status code
+            description: Object with ciphertext and metadata.
+            content:
+              application/json:
+                schema: 
+                  type: object
+                  properties:
+                    cipher:
+                      type: object
+                      properties:
+                        algorithm:
+                          type: string
+                          example: "AES"
+                        bits:
+                          type: integer
+                          example: 128
+                        mode:
+                          type: string
+                          example: "ECB"
+                    key:
+                      type: string
+                      example: "secrets11"
+                    encoding: 
+                      type: string
+                      example: "base64"
+                    ciphertext:
+                      type: string
+                      example: "a7W5SABkaKJrGiPJWYYZAIdkZWoE4uvXE"
+  /crypto/aes/ecb128/decrypt:
+    post:
+        tags:
+        - "AES"
+        summary: Decrypts ciphertext with AES-128 in ECB mode.
+        description: Keysize in bytes must be 16, 24, 32. Output is in plaintext.
+        responses:
+          '200':    # status code
+            description: Object with plaintext and metadata.
+            content:
+              application/json:
+                schema: 
+                  type: object
+                  properties:
+                    cipher:
+                      type: object
+                      properties:
+                        algorithm:
+                          type: string
+                          example: "AES"
+                        bits:
+                          type: integer
+                          example: 128
+                        mode:
+                          type: string
+                          example: "ECB"
+                    key:
+                      type: string
+                      example: "secrets11"
+                    encoding: 
+                      type: string
+                      example: "string/plaintext"
+                    plaintext:
+                      type: string
+                      example: "This message is secretly passed."
+  
