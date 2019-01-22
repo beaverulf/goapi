@@ -1,13 +1,34 @@
+// Go CryptoService API.
+//
+// Project description.
+//
+//     Schemes: http
+//     Version: 0.1
+//
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+//     Security:
+//     - bearer
+//
+//     SecurityDefinitions:
+//     bearer:
+//          type: apiKey
+//          name: Authorization
+//          in: header
+//
+// swagger:meta
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/beaverulf/goapi/controllers"
-	"github.com/beaverulf/goapi/types"
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -30,9 +51,9 @@ func setupPrometheus() {
 	rootRouter.Handle("/metrics", promhttp.Handler())
 }
 func setupCryptoEndpoints() {
-	Router.HandleFunc("/crypto/aes", ListAESEncryptionServices).Methods("GET")
-	Router.Handle("/crypto/aes/ecb128/encrypt", TimedHandler(controllers.EncryptAes128ECBHandlerFunc, aes128ECBEncryptorResponseTimerMetric)).Methods("POST")
-	Router.HandleFunc("/crypto/aes/ecb128/decrypt", TimedHandler(controllers.DecryptAes128ECBHandlerFunc, aes128ECBDecryptorResponseTimerMetric)).Methods("POST")
+	Router.HandleFunc("/crypto/aes", controllers.GetAESEncryptionServicesList).Methods("GET")
+	Router.Handle("/crypto/aes/ecb/encrypt", TimedHandler(controllers.EncryptAesECBHandlerFunc, aes128ECBEncryptorResponseTimerMetric)).Methods("POST")
+	Router.HandleFunc("/crypto/aes/ecb/decrypt", TimedHandler(controllers.DecryptAesECBHandlerFunc, aes128ECBDecryptorResponseTimerMetric)).Methods("POST")
 }
 
 //Prometheus metrics.
@@ -58,12 +79,4 @@ func TimedHandler(h http.HandlerFunc, summary prometheus.Summary) http.HandlerFu
 
 		summary.Observe(float64(duration.Seconds() * 1000))
 	}
-}
-
-//ListAESEncryptionServices shows the swagger index
-func ListAESEncryptionServices(w http.ResponseWriter, r *http.Request) {
-	var services []types.CryptoService
-	services = append(services, types.CryptoService{Name: "AES", Functions: []string{"128-ECB", "192-ECB", "256-ECB"}})
-
-	json.NewEncoder(w).Encode(services)
 }

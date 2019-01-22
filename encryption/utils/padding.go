@@ -20,3 +20,24 @@ func Pkcs7Padding(src []byte, blockSize int) []byte {
 	//fmt.Printf("String: %s \t Values: %o\n", string(paddedDst), paddedDst)
 	return paddedDst
 }
+
+//GetAESKeyPadding returns a padded key, 16,24,32 bytes long
+func GetAESKeyPadding(key []byte) []byte {
+	keyLen := len(key)
+
+	if keyLen%16 == 0 {
+		return key
+	}
+
+	var blockSize int
+	if keyLen < 32 && keyLen > 24 {
+		blockSize = 32
+	} else if keyLen < 24 && keyLen > 16 {
+		blockSize = 24
+	} else {
+		blockSize = 16
+	}
+
+	return Pkcs7Padding(key, blockSize)
+
+}

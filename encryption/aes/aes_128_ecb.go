@@ -15,9 +15,9 @@ func EncryptAesEcb128(src, key []byte) ([]byte, error) {
 	if len(key)%8 != 0 {
 		return nil, fmt.Errorf("key size must be a multiple of 8, currently: %d", len(key))
 	} else if len(key) > 32 {
-		return nil, errors.New("key size must be min: 16, max 32")
+		return nil, fmt.Errorf("key size must be min: 16, max 32, currently: %d", len(key))
 	} else if len(key) < 16 {
-		return nil, errors.New("key size must be min: 16, max 32")
+		return nil, fmt.Errorf("key size must be min: 16, max 32, currently: %d", len(key))
 	}
 
 	cipher, err := aes.NewCipher(key)
